@@ -67,7 +67,10 @@ public class Room {
             else
                 GameLogger.LOGGER.appendMessage("You entered the room and found an axe. You can't carry more than one.");
         } else if (event == RoomEvent.STAIRS) {
+            event = RoomEvent.CHARACTER;
+            Character.INSTANCE.setCharacterPosition(prevPosition);
             Labyrinth.labyrinth.generateMap();
+            Window.getInstance().updateLabels();
 
             GameLogger.LOGGER.appendMessage("You found the stairs and went up one floor.");
         } else if (event == RoomEvent.EMPTY) {

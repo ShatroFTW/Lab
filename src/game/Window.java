@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 public class Window {
+    private static Window instance;
     private JPanel contentPane;
     private JPanel labyrinthPane;
     private JButton pickUpButton;
@@ -30,6 +31,13 @@ public class Window {
     private static HashMap<String, Component> componentMap = new HashMap<>();
     private final Properties properties;
 
+    public static Window getInstance() {
+        return instance;
+    }
+
+    public static HashMap<String, Component> getComponentMap() {
+        return componentMap;
+    }
     public Window() {
         properties = new Properties();
         try {
@@ -65,24 +73,13 @@ public class Window {
         });
 
         init();
-
-        Room[][] rooms = MapLayout.INSTANCE.getRooms();
-
-        //for testing purposes
-        //Icons will be hidden and revealed only when you move
-        Component c;
-        for (int y = 0; y < 7; y++) {
-            for (int x = 0; x < 7; x++) {
-                if ((c = componentMap.getOrDefault("lbl" + x + y, null)) != null)
-                    ((JLabel) c).setIcon(rooms[x][y].getIcon());
-            }
-        }
     }
 
     public static void main(String[] args) {
         FlatDarkLaf.setup();
         JFrame frame = new JFrame("Lab");
-        frame.setContentPane(new Window().contentPane);
+        instance = new Window();
+        frame.setContentPane(instance.contentPane);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(960, 540));
         frame.setPreferredSize(new Dimension(1280, 720));
@@ -99,20 +96,21 @@ public class Window {
                 label.setHorizontalAlignment(SwingConstants.CENTER);
                 label.setVerticalAlignment(SwingConstants.CENTER);
                 label.setName("lbl" + j + i);
+                label.setIcon(new ImageIcon());
                 label.setBorder(new LineBorder(Color.BLACK));
                 labyrinthPane.add(label);
             }
         }
     }
 
-    private void init() {
+    public void init() {
         GameLogger.LOGGER = new GameLogger(logTextArea);
-        Labyrinth.labyrinth.generateMap();
         componentMap = createComponentMap(labyrinthPane);
+        Labyrinth.labyrinth.generateMap();
         updateLabels();
     }
 
-    private void updateLabels() {
+    public void updateLabels() {
         currentPointsLabel.setText(properties.getProperty("current.points") + GameState.INSTANCE.getPoints());
         lifePointsLabel.setText(properties.getProperty("life.points") + Character.INSTANCE.getLifePoints());
         holdingAxeLabel.setText(properties.getProperty("holding.an.axe") +
@@ -135,4 +133,6 @@ public class Window {
     public static Component getComponentByName(String name) {
         return componentMap.getOrDefault(name, null);
     }
+
+
 }

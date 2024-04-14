@@ -1,18 +1,20 @@
 package classes;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Random;
 
 import enums.RoomEvent;
+import game.Window;
+
+import javax.swing.*;
 
 public class Labyrinth {
 	public static Labyrinth labyrinth = new Labyrinth();
 	
-	public Labyrinth() {
-		
-	}
+	public Labyrinth() { }
 
 	public void generateMap() {
+		MapLayout.INSTANCE.clear();
 		int x, y, enemiesPlaced = 0, itemsPlaced = 0;
 		boolean stairsPlaced = false, characterPlaced = false;
 		Random rand = new Random();
@@ -38,6 +40,27 @@ public class Labyrinth {
 			}
 			
 			MapLayout.INSTANCE.createRoom(new Room(event), x, y);
+		}
+		resetIcons();
+	}
+
+	private void resetIcons() {
+		JLabel label;
+		Room[][] rooms = MapLayout.INSTANCE.getRooms();
+		Point charPosition = Character.INSTANCE.getCharacterPosition();
+		for (int y = 0; y < 7; y++) {
+			for (int x = 0; x < 7; x++) {
+				if ((label = (JLabel) Window.getComponentMap().getOrDefault("lbl" + x + y, null)) != null) {
+					if((x == charPosition.x && y == charPosition.y) || rooms[x][y].getEvent() == RoomEvent.STAIRS) {
+						label.setIcon(rooms[x][y].getIcon());
+						label.setBackground(Color.GRAY);
+					}
+					else {
+						label.setIcon(new ImageIcon());
+						label.setBackground(null);
+					}
+				}
+			}
 		}
 	}
 }
