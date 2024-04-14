@@ -13,7 +13,6 @@ public class GameState {
 	
 	public void increaseScore() {
 		points++;
-//		Window.lblCurrentPoints.setText("Current Points: " + points);
 	}
 	
 	public boolean loadGame() {

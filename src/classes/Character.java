@@ -50,7 +50,7 @@ public class Character {
             characterPosition.x--;
         } else if(direction == Direction.EAST && characterPosition.x < 6){
             characterPosition.x++;
-        }
+        } else return;
 
         MapLayout.INSTANCE.discoverRoom(prevPosition, characterPosition);
     }

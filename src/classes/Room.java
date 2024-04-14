@@ -1,7 +1,6 @@
 package classes;
 
-import java.awt.Image;
-import java.awt.Point;
+import java.awt.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -74,14 +73,15 @@ public class Room {
         } else if (event == RoomEvent.EMPTY) {
             event = RoomEvent.CHARACTER;
 
-            GameLogger.LOGGER.appendMessage("You entered the room and found nothing.");
+//            GameLogger.LOGGER.appendMessage("You entered the room and found nothing.");
         }
+
+        if (!discovered) GameState.INSTANCE.increaseScore();
+        discovered = true;
 
         this.updateIcon();
         this.updateLabelIcon(Character.INSTANCE.getCharacterPosition());
 
-        if (!discovered) GameState.INSTANCE.increaseScore();
-        discovered = true;
 
         //setting the event state of the room you just left
         if (prevRoom.event == RoomEvent.CHARACTER) {
@@ -119,9 +119,10 @@ public class Room {
         }
     }
 
-    private void updateLabelIcon(Point coords) {
-        JLabel label = ((JLabel) Window.getComponentByName("lbl" + coords.x + coords.y));
+    private void updateLabelIcon(Point point) {
+        JLabel label = ((JLabel) Window.getComponentByName("lbl" + point.x + point.y));
         assert label != null;
         label.setIcon(icon);
+        if(discovered) label.setBackground(Color.GRAY);
     }
 }
