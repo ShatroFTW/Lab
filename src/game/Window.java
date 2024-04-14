@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -38,11 +40,13 @@ public class Window {
     public static HashMap<String, Component> getComponentMap() {
         return componentMap;
     }
+
     public Window() {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
         properties = new Properties();
-        try {
-            properties.load(new FileInputStream("src/strings.properties"));
-        } catch (Exception e) {
+        try(InputStream resourceStream = loader.getResourceAsStream("strings.properties")) {
+            properties.load(resourceStream);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
